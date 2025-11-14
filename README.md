@@ -43,6 +43,28 @@ The algorithm was tested using the provided `main` method in `RabinKarp.java`.
 | Longer String | 24 | "GCAG" | 4 | `[5, 20]` | DNA-like sequence |
 | No Match | 11 | "goodbye" | 7 | `[]` | Pattern not found |
 
+#### ⏱ **Time Complexity**
+
+| Scenario           | Time        | Explanation                                |
+|-------------------|-------------|--------------------------------------------|
+| **Preprocessing** | **O(M)**    | Initial hash computation                   |
+| **Average Case**  | **O(N + M)**| Rolling hash updates in constant time      |
+| **Best Case**     | **O(N + M)**| Few or no collisions                       |
+| **Worst Case**    | **O(N · M)**| Many collisions → full string comparisons  |
+
+👉 Worst case practically **never happens** due to the use of a large PRIME modulus, which minimizes collisions.
+
+---
+
+#### 💾 **Space Complexity**
+
+| Component                | Complexity | Notes                            |
+|--------------------------|------------|----------------------------------|
+| Working Variables        | **O(1)**   | Only constant number of hashes   |
+| Output (match indices)   | **O(k)**   | k = number of occurrences        |
+
+**Total Auxiliary Space:**  
+➡️ **O(1)** extra space + **O(k)** for storing match results
 #### Console Output
 
 ```console
@@ -75,6 +97,9 @@ Let:
 - **M** = length of the pattern  
 
 ---
+
+
+
 
 #### ⏱ **Time Complexity**
 
