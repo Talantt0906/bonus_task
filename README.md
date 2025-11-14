@@ -8,39 +8,40 @@ This repository contains the Java implementation of the **Rabin-Karp String Matc
 
 The core idea of the Rabin-Karp algorithm is to transform the computationally expensive task of string comparison into fast hash value comparisons.
 
-> **Key Takeaway:** The use of a **Polynomial Rolling Hash** allows the algorithm to re-calculate the hash for the next window in **O(1)** time on average, leading to an efficient average time complexity.
+> **Key Takeaway:** Using a **Polynomial Rolling Hash** allows the algorithm to update the hash of each next window in **O(1)** time, enabling efficient string matching.
 
-#### Hashing Methodology
+#### 🔢 Hashing Methodology
 
-The hash value $H(S)$ for a substring $S$ of length $M$ is calculated using the following formula:
+The hash value of a substring \( S \) with length \( M \) is:
 
 $$H(S) = \left( \sum_{i=0}^{M-1} S[i] \cdot B^{M-1-i} \right) \pmod{P}$$
 
-* **BASE (B = 257)**: A prime radix chosen to accommodate the extended ASCII character set.
-* **PRIME (P = 1000000007)**: A large prime modulus used to minimize hash collisions.
+- **BASE (B = 257)**: A prime larger than ASCII range  
+- **PRIME (P = 1000000007)**: Large modulus to reduce collisions  
 
-#### Rolling Hash Principle
+#### 🔁 Rolling Hash Principle
 
-The implementation uses a rolling hash mechanism to update the text window hash in constant time:
+When sliding the window (from index *i* to *i+1*):
 
-1.  **Removal:** Subtract the contribution of the leading character.
-2.  **Shift:** Multiply the remaining hash by `BASE`.
-3.  **Addition:** Add the contribution of the new trailing character.
+1. Remove contribution of the leading character  
+2. Shift remaining hash by multiplying with `BASE`  
+3. Add new trailing character  
+4. Compare hash → if equal, verify with character-by-character check  
 
-The code also includes a necessary character-by-character check immediately following any hash match to handle potential **spurious hits** (hash collisions).
+This makes average performance very efficient.
 
 ---
 
 ### 2. 🧪 Testing Results & Sample Output
 
-The algorithm was tested using the provided `main` method in `RabinKarp.java` with strings of varying lengths to observe its behavior.
+The algorithm was tested using the provided `main` method in `RabinKarp.java`.
 
-| Test Case | Text Length (N) | Pattern (P) | Pattern Length (M) | Found Indices | Condition |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Short String** | 11 | `"abra"` | 4 | `[0, 7]` | Multiple Matches |
-| **Medium String** | 35 | `"fox"` | 3 | `[16]` | Single Match |
-| **Longer String** | 24 | `"GCAG"` | 4 | `[5, 20]` | Multiple Matches (DNA Sequence) |
-| **No Match** | 11 | `"goodbye"` | 7 | `[]` | Pattern Not Found |
+| Test Case | Text Length (N) | Pattern | M | Result | Description |
+|---|:---:|---|:---:|---|---|
+| Short String | 11 | "abra" | 4 | `[0, 7]` | Multiple matches |
+| Medium String | 35 | "fox" | 3 | `[16]` | Single match |
+| Longer String | 24 | "GCAG" | 4 | `[5, 20]` | DNA-like sequence |
+| No Match | 11 | "goodbye" | 7 | `[]` | Pattern not found |
 
 #### Console Output
 
@@ -66,3 +67,35 @@ Test 4: No Match
 Text:    "hello world"
 Pattern: "goodbye"
 Found at indices: []
+ ### 3. 📊 Time and Space Complexity Analysis
+
+Let:
+
+- **N** = length of the text  
+- **M** = length of the pattern  
+
+---
+
+#### ⏱ **Time Complexity**
+
+| Scenario           | Time        | Explanation                                |
+|-------------------|-------------|--------------------------------------------|
+| **Preprocessing** | **O(M)**    | Initial hash computation                   |
+| **Average Case**  | **O(N + M)**| Rolling hash updates in constant time      |
+| **Best Case**     | **O(N + M)**| Few or no collisions                       |
+| **Worst Case**    | **O(N · M)**| Many collisions → full string comparisons  |
+
+👉 Worst case practically **never happens** due to the use of a large PRIME modulus, which minimizes collisions.
+
+---
+
+#### 💾 **Space Complexity**
+
+| Component                | Complexity | Notes                            |
+|--------------------------|------------|----------------------------------|
+| Working Variables        | **O(1)**   | Only constant number of hashes   |
+| Output (match indices)   | **O(k)**   | k = number of occurrences        |
+
+**Total Auxiliary Space:**  
+➡️ **O(1)** extra space + **O(k)** for storing match results
+
